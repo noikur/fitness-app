@@ -5,14 +5,16 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer
 } from 'recharts'
+import supabase from '../supabase'
 
 function Dashboard() {
   const [sessions, setSessions] = useState([])
   const [total, setTotal] = useState(0)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    axios.get('http://127.0.0.1:5000/sessions')
+useEffect(() => {
+  supabase.auth.getUser().then(({ data: { user } }) => {
+    axios.get(`http://127.0.0.1:5000/sessions?user_id=${user.id}`)
       .then(res => {
         setTotal(res.data.length)
         const grouped = {}
@@ -23,8 +25,8 @@ function Dashboard() {
         const chartData = Object.entries(grouped).map(([date, count]) => ({ date, count }))
         setSessions(chartData)
       })
-  }, [])
-
+  })
+}, [])
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-4xl mx-auto p-8">

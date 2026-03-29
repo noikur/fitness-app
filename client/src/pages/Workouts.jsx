@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
+import supabase from '../supabase'
 
 function Workouts() {
   const [workouts, setWorkouts] = useState([])
@@ -15,14 +16,16 @@ function Workouts() {
       .then(res => setWorkouts(res.data))
   }, [goalId])
 
-  const logSession = (workoutId) => {
-    axios.post('http://127.0.0.1:5000/sessions', {
-      workout_id: workoutId,
-      notes: notes[workoutId] || ''
-    }).then(() => {
-      setLogged(prev => ({ ...prev, [workoutId]: true }))
-    })
-  }
+const logSession = async (workoutId) => {
+  const { data: { user } } = await supabase.auth.getUser()
+  axios.post('http://127.0.0.1:5000/sessions', {
+    workout_id: workoutId,
+    notes: notes[workoutId] || '',
+    user_id: user.id
+  }).then(() => {
+    setLogged(prev => ({ ...prev, [workoutId]: true }))
+  })
+}
 
   return (
     <div className="min-h-screen bg-gray-50">

@@ -39,20 +39,23 @@ app.get('/workouts/:goalId', async (req, res) => {
 })
 
 app.post('/sessions', async (req, res) => {
-  const { workout_id, notes } = req.body
+  const { workout_id, notes, user_id } = req.body
   const { data, error } = await supabase
     .from('sessions')
-    .insert([{ workout_id, notes, completed_at: new Date() }])
+    .insert([{ workout_id, notes, completed_at: new Date(), user_id }])
     .select()
   if (error) return res.status(500).json({ error })
   res.json(data)
 })
 
 app.get('/sessions', async (req, res) => {
-  const { data, error } = await supabase
+  const { user_id } = req.query
+  let query = supabase
     .from('sessions')
     .select('*')
     .order('completed_at', { ascending: true })
+  if (user_id) query = query.eq('user_id', user_id)
+  const { data, error } = await query
   if (error) return res.status(500).json({ error })
   res.json(data)
 })
