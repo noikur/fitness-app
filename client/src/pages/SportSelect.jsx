@@ -32,6 +32,12 @@ function SportSelect() {
           </div>
           <div className="flex gap-3">
             <button
+              onClick={() => navigate('/about')}
+              className="px-4 py-2 border border-gray-200 rounded-lg text-sm text-gray-500 hover:bg-gray-100 transition-all"
+            >
+            About
+            </button>
+            <button
               onClick={() => navigate('/dashboard')}
               className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600 transition-all"
             >

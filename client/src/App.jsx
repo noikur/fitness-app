@@ -6,6 +6,8 @@ import SportSelect from './pages/SportSelect'
 import Goals from './pages/Goals'
 import Workouts from './pages/Workouts'
 import Dashboard from './pages/Dashboard'
+import Disclaimer from './pages/Disclaimer'
+import About from './pages/About'
 
 function App() {
   const [user, setUser] = useState(null)
@@ -26,10 +28,18 @@ function App() {
 
   if (loading) return <div className="min-h-screen flex items-center justify-center">Loading...</div>
 
+  const disclaimerAccepted = localStorage.getItem('disclaimerAccepted')
+
   return (
     <Routes>
       <Route path="/auth" element={!user ? <Auth /> : <Navigate to="/" />} />
-      <Route path="/" element={user ? <SportSelect /> : <Navigate to="/auth" />} />
+      <Route path="/disclaimer" element={user ? <Disclaimer /> : <Navigate to="/auth" />} />
+      <Route path="/about" element={<About />} />
+      <Route path="/" element={
+        !user ? <Navigate to="/auth" /> :
+        !disclaimerAccepted ? <Navigate to="/disclaimer" /> :
+        <SportSelect />
+      } />
       <Route path="/goals/:sportId" element={user ? <Goals /> : <Navigate to="/auth" />} />
       <Route path="/workouts/:goalId" element={user ? <Workouts /> : <Navigate to="/auth" />} />
       <Route path="/dashboard" element={user ? <Dashboard /> : <Navigate to="/auth" />} />
